@@ -1,19 +1,22 @@
-FROM golang:1.22.0-bookworm
+FROM golang:1.22.0-alpine AS build
 
-COPY go.mod .
+WORKDIR /lab-03-starter-project-golang
 
-COPY go.sum .
-
-COPY main.go .
+COPY go.mod ./
+COPY go.sum ./
 
 RUN go mod download
 
-COPY cmd cmd
-
-COPY lib lib
-
-COPY templates templates
+COPY . .
 
 RUN go build -o build/fizzbuzz
 
-CMD ["./build/fizzbuzz", "serve"]
+FROM scratch
+
+WORKDIR /lab-03-starter-project-golang
+
+COPY --from=build /lab-03-starter-project-golang/build/fizzbuzz /fizzbuzz
+COPY --from=build /lab-03-starter-project-golang/templates templates
+
+# Command to run the application
+CMD ["/fizzbuzz", "serve"]
