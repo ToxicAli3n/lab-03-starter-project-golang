@@ -11,7 +11,7 @@ COPY . .
 
 RUN go build -o build/fizzbuzz
 
-FROM scratch
+FROM gcr.io/distroless/base-debian11
 
 WORKDIR /lab-03-starter-project-golang
 
